@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "noImplicitAny": false,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client", "cypress", "vitest/importMeta", "vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "canisters/assets": ["src/declarations/assets"],
+      "canisters/data_manager": ["src/declarations/data_manager"],
+      "@/*": ["src/frontend/*"],
+      "~/*": ["src/frontend/*"]
+    }
+  },
+  "include": [
+    "src/frontend/**/*.ts",
+    "src/frontend/**/*.d.ts",
+    "src/frontend/**/*.tsx",
+    "src/frontend/**/*.vue",
+    "e2e/**/*.cy.ts"
+  ],
+  "exclude": ["**/*.stories.ts"]
+}

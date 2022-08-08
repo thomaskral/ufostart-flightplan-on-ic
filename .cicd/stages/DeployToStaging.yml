@@ -1,0 +1,78 @@
+stages:
+  - stage: 'Deploy_to_Staging'
+    displayName: 'Deploy to Staging'
+    condition: and(eq(variables['stage_staging__enabled'], true), succeeded())
+    jobs:
+      - deployment: 'deploy_to_staging'
+        timeoutInMinutes: 15
+        cancelTimeoutInMinutes: 5
+        pool: 'Default'
+        environment: 'StagingOnIC'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: ../tasks/DefineContext.yml@self
+                - template: ../tasks/SetupNodeJS.yml@self
+                  parameters:
+                    enableYarnCaching: $(stage_build__yarn_caching_is_enabled)
+                - template: ../tasks/PrintContext.yml@self
+
+                - bash: |
+                    if [[ ! -d dist ]]; then
+                      mkdir -p dist
+                    fi
+                    cp version.template dist/__version.json
+                    sed -i "s/__ARTIFACT_VERSION__/${ARTIFACT_VERSION}/" dist/__version.json
+                    sed -i "s/__ARTIFACT_BRANCH_NAME__/${ARTIFACT_BRANCH_NAME}/" dist/__version.json
+                    sed -i "s/__ARTIFACT_BUILD_ID__/${ARTIFACT_BUILD_ID}/" dist/__version.json
+                    sed -i "s/__ARTIFACT_TIMESTAMP__/${ARTIFACT_TIMESTAMP}/" dist/__version.json
+                    sed -i "s/__ARTIFACT_DATETIME__/${ARTIFACT_DATETIME}/" dist/__version.json
+                    sed -i "s/__DEPLOY_TIMESTAMP__/${DEPLOY_TIMESTAMP}/" dist/__version.json
+                    sed -i "s/__DEPLOY_DATETIME__/${DEPLOY_DATETIME}/" dist/__version.json
+                  displayName: 'Artifact: define version'
+
+                - bash: |
+                    if [ -f dist/__version.json ]; then
+                      echo 'dist'
+                      ls -al dist
+                      cat dist/__version.json
+                    fi
+                  displayName: 'Artifact: print version information'
+                  condition: and(succeeded(), eq(variables['debug__print_artifact_version_information'], true))
+
+                - bash: |
+                    echo "##vso[task.setvariable variable=NODE_ENV]production"
+                  displayName: 'Deployment: prepare NODE_ENV variable'
+
+                - bash: |
+                    echo "##vso[task.setvariable variable=DFX_NETWORK]staging"
+                  displayName: 'Deployment: prepare DFX_NETWORK variable'
+
+                - bash: |
+                    echo "##vso[task.setvariable variable=VITE_DFX_NETWORK]staging"
+                  displayName: 'Deployment: prepare VITE_DFX_NETWORK variable'
+
+                - bash: |
+                    echo "##vso[task.setvariable variable=VITE_ENVIRONMENT]staging"
+                  displayName: 'Deployment: prepare VITE_ENVIRONMENT variable'
+
+                - bash: |
+                    . ${NVM_DIR}/nvm.sh 
+                    nvm use
+                    /home/forge/bin/dfx identity use mjn_staging
+                    /home/forge/bin/dfx identity --network staging set-wallet gmmn4-qqaaa-aaaal-aawrq-cai
+                    /home/forge/bin/dfx deploy --network staging data_manager
+                    echo 'yes' | /home/forge/bin/dfx deploy --network staging assets
+                  displayName: 'Deployment: publish frontend'
+                  condition: eq( variables['stage_staging__should_deploy'], true )
+                  env:
+                    VITE_IC_BACKEND_HOST: $(stage_staging__ic_backend_host)
+
+                # //////////////////////////////////////////////////////////////////////
+                # // Test
+                - bash: |
+                    echo "INFO:  Check '$(stage_staging__version_url)'"
+                    curl -fsSL '$(stage_staging__version_url)'
+                  displayName: 'Test: is application up and running'

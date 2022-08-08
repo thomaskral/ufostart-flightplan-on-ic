@@ -1,0 +1,45 @@
+name: '$(Build.BuildId)  [$(Build.SourceBranchName)]  '
+
+trigger:
+  - main
+
+variables:
+  - template: variables/base.yml
+
+  # ///////////////////////////////////////////////////////////////////////////
+  # // Pipeline Configuration /////////////////////////////////////////////////
+
+  - { name: debug__print_configuration_variables, value: true }
+  - { name: debug__print_artifact_version_information, value: true }
+  - { name: debug__list_working_directory_content, value: false }
+
+  # // @info disable husky in ci/cd environment
+  - { name: HUSKY, value: 0 }
+
+  # // stage: build configuration flags
+  - { name: stage_build__enabled, value: true }
+  - { name: stage_build__yarn_caching_is_enabled, value: true }
+  - { name: stage_build__frontend_check_code_style, value: true }
+  - { name: stage_build__frontend_analyse_code, value: true }
+  - { name: stage_build__artifact_build, value: true }
+  - { name: stage_build__artifact_test, value: true }
+  - { name: stage_build__artifact_publish_test_results, value: true } # only true if 'stage_build__artifact_test' is also true
+  - { name: stage_build__publish_artifact, value: true }
+
+  # // stage: staging
+  - { name: stage_staging__enabled, value: true }
+  - { name: stage_staging__should_deploy, value: true }
+  - { name: stage_staging__public_url, value: 'https://staging-miljn.icp.xyz' }
+  - { name: stage_staging__version_url, value: 'https://ojk3c-iaaaa-aaaal-aa3lq-cai.raw.ic0.app/__version.json' }
+  - { name: stage_staging__ic_backend_host, value: 'ic0.app' }
+
+  # // stage: production
+  - { name: stage_production__enabled, value: true }
+  - { name: stage_production__should_deploy, value: true }
+  - { name: stage_production__public_url, value: 'https://miljn.icp.xyz' }
+  - { name: stage_production__version_url, value: 'https://ojk3c-iaaaa-aaaal-aa3lq-cai.raw.ic0.app/__version.json' }
+  - { name: stage_production__ic_backend_host, value: 'ic0.app' }
+
+stages:
+  - template: 'stages/DeployToStaging.yml'
+  - template: 'stages/DeployToProduction.yml'

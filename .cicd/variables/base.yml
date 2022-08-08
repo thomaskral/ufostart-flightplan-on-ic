@@ -1,0 +1,14 @@
+variables:
+  PROJECT_NAME: 'miljn-on-ic'
+  PROJECT_ROOT: '$(Build.SourcesDirectory)'
+  BUILD_DIRECTORY: '$(PROJECT_ROOT)/dist'
+
+  ARTIFACT_VERSION: '$(Build.SourceVersion)'
+  ARTIFACT_BUILD_ID: '$(Build.BuildId)'
+  ARTIFACT_BRANCH_NAME: '$(Build.SourceBranchName)'
+  ARTIFACT_TIMESTAMP: 'null'
+  ARTIFACT_DATETIME: 'null'
+  ARTIFACT_JS_NAME: 'MiljnOnIC'
+
+  DEPLOY_TIMESTAMP: 'null'
+  DEPLOY_DATETIME: 'null'

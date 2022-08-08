@@ -1,0 +1,93 @@
+stages:
+  - stage: 'Build'
+    displayName: 'Build'
+    condition: eq(variables['stage_build__enabled'], true)
+    jobs:
+      - job: 'from_source_to_artifact'
+        timeoutInMinutes: 30
+        cancelTimeoutInMinutes: 5
+        pool: 'Default'
+        steps:
+          - template: ../tasks/DefineContext.yml@self
+          - template: ../tasks/SetupNodeJS.yml@self
+            parameters:
+              enableYarnCaching: $(stage_build__yarn_caching_is_enabled)
+          - template: ../tasks/PrintContext.yml@self
+
+          - bash: |
+              . ${NVM_DIR}/nvm.sh
+              nvm use
+              yarn code:style
+            displayName: 'Frontend: check code style'
+            condition: and(succeeded(), eq(variables['stage_build__frontend_check_code_style'], true))
+
+          - bash: |
+              . ${NVM_DIR}/nvm.sh
+              nvm use
+              yarn code:analyse
+            displayName: 'Frontend: analyse code'
+            condition: and(succeeded(), eq(variables['stage_build__frontend_analyse_code'], true))
+
+          - bash: |
+              . ${NVM_DIR}/nvm.sh 
+              nvm use
+              /home/forge/bin/dfx start --background
+              /home/forge/bin/dfx canister create --all
+              /home/forge/bin/dfx build data_manager; if [[ "$?" != '0' ]]; then exit 1; fi
+              /home/forge/bin/dfx build assets; if [[ "$?" != '0' ]]; then exit 1; fi
+              /home/forge/bin/dfx build internet_identity; if [[ "$?" != '0' ]]; then exit 1; fi
+
+              /home/forge/bin/dfx deploy --network local internet_identity
+              /home/forge/bin/dfx deploy --network local data_manager
+              /home/forge/bin/dfx deploy --network local assets
+
+            displayName: 'Artifact: build'
+            condition: and(succeeded(), eq(variables['stage_build__artifact_build'], true))
+
+          - bash: |
+              if [[ ! -d dist ]]; then
+                mkdir -p dist
+              fi
+              cp version.template dist/__version.json
+              sed -i "s/__ARTIFACT_VERSION__/${ARTIFACT_VERSION}/" dist/__version.json
+              sed -i "s/__ARTIFACT_BRANCH_NAME__/${ARTIFACT_BRANCH_NAME}/" dist/__version.json
+              sed -i "s/__ARTIFACT_BUILD_ID__/${ARTIFACT_BUILD_ID}/" dist/__version.json
+              sed -i "s/__ARTIFACT_TIMESTAMP__/${ARTIFACT_TIMESTAMP}/" dist/__version.json
+              sed -i "s/__ARTIFACT_DATETIME__/${ARTIFACT_DATETIME}/" dist/__version.json
+            displayName: 'Artifact: define version'
+
+          - bash: |
+              if [ -f dist/__version.json ]; then
+                echo 'dist'
+                ls -al dist
+                cat dist/__version.json
+              fi
+            displayName: 'Artifact: print version information'
+            condition: and(succeeded(), eq(variables['debug__print_artifact_version_information'], true))
+
+          - bash: |
+              . ${NVM_DIR}/nvm.sh
+              nvm use
+              /usr/bin/yarn code:test
+            displayName: 'Artifact: test'
+            condition: and(succeeded(), eq(variables['stage_build__artifact_test'], true))
+
+          # @info there is currently nothing to upload because the tests are not implemented
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'vitest-test-result.xml'
+              searchFolder: 'src/frontend'
+              testRunTitle: 'unit and integration'
+              publishRunAttachments: true
+            displayName: 'Artifact: publish test results'
+            condition: and(succeeded(), eq(variables['stage_build__artifact_test'], true), eq(variables['stage_build__artifact_publish_test_results'], true))
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '$(PROJECT_ROOT)/dist'
+              artifactName: '$(ARTIFACT_JS_NAME)'
+            displayName: 'Artifact: publish'
+            condition: and(succeeded(), eq(variables['stage_build__publish_artifact'], true))
+
+          - template: ../tasks/Cleanup.yml@self

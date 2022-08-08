@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-base-200">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/app/assets/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/app/assets/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/app/assets/favicon.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      /**
+       * @dfinity/agent requires this. Can be removed once it's fixed
+       */
+      import { Buffer } from 'buffer'
+
+      window.global = window
+      window.Buffer = Buffer
+    </script>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

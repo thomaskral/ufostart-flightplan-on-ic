@@ -1,0 +1,43 @@
+parameters:
+  - name: enableYarnCaching
+    type: string
+    default: false
+
+steps:
+  - bash: |
+      echo "##vso[task.setvariable variable=NODE_VERSION]v16.15.1"
+    displayName: 'Preparation: evaluate NODE_VERSION'
+
+  - bash: |
+      echo "##vso[task.setvariable variable=NVM_DIR]/home/forge/.nvm"
+    displayName: 'Preparation: evaluate NVM_DIR'
+
+  - bash: |
+      echo "##vso[task.setvariable variable=YARN_CACHE_FOLDER]/home/forge/.cache/yarn/miljn-on-ic-ts"
+    displayName: 'Preparation: evaluate YARN_CACHE_FOLDER'
+
+  - bash: |
+      /home/forge/.nvm/versions/node/v14.16.0/bin/npm config delete prefix    # avoid a warning
+      . ${NVM_DIR}/nvm.sh
+      nvm install ${NODE_VERSION}
+      nvm use ${NODE_VERSION}
+      nvm alias default ${NODE_VERSION}
+      VERSION_PATH="$(nvm_version_path ${NODE_VERSION})"
+      echo "##vso[task.prependPath]$VERSION_PATH"
+    displayName: 'Preparation: Install Node.js through nvm'
+
+  - bash: |
+      if [[ ! -d ${YARN_CACHE_FOLDER} ]]; then
+        mkdir -p ${YARN_CACHE_FOLDER}
+      fi
+    displayName: 'Frontend: create yarn cache dir'
+    condition: eq( '${{ parameters.enableYarnCaching }}', 'true')
+
+  - bash: |
+      . ${NVM_DIR}/nvm.sh
+      echo "INFO:  yarn cache folder: '${YARN_CACHE_FOLDER}'"
+      nvm use
+      yarn install --ignore-platform --frozen-lockfile
+    displayName: 'Frontend: dependency installation'
+    env:
+      YARN_CACHE_FOLDER: $(YARN_CACHE_FOLDER)

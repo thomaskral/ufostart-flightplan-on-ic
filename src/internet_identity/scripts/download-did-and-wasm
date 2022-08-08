@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && pwd 2> /dev/null; )";
+
+INTERNET_IDENTITY_VERSION="${INTERNET_IDENTITY_VERSION:-release-2022-07-25}"
+INTERNET_IDENTITY_DIRECTORY="${INTERNET_IDENTITY_DIRECTORY:-src/internet_identity}"
+
+# Download the Internet Identity canister's development wasm as well as its candid interface file. See dfx.json for details.
+
+curl -sSL "https://github.com/dfinity/internet-identity/releases/download/${INTERNET_IDENTITY_VERSION}/internet_identity_dev.wasm" \
+  -o "${INTERNET_IDENTITY_DIRECTORY}/internet_identity.wasm"
+curl -sSL "https://github.com/dfinity/internet-identity/releases/download/${INTERNET_IDENTITY_VERSION}/internet_identity.did" \
+  -o "${INTERNET_IDENTITY_DIRECTORY}/internet_identity.did"

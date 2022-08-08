@@ -1,0 +1,9 @@
+{
+  "commit": "__ARTIFACT_VERSION__",
+  "branch": "__ARTIFACT_BRANCH_NAME__",
+  "buildId": "__ARTIFACT_BUILD_ID__",
+  "buildTimestamp": "__ARTIFACT_TIMESTAMP__",
+  "buildDateTime": "__ARTIFACT_DATETIME__",
+  "deployTimestamp": "__DEPLOY_TIMESTAMP__",
+  "deployDateTime": "__DEPLOY_DATETIME__"
+}

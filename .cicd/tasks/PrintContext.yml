@@ -1,0 +1,43 @@
+parameters: []
+
+steps:
+  # //////////////////////////////////////////////////////////////////////
+  # // DEBUG
+  - bash: |
+      echo "\$PROJECT_NAME                              = '${PROJECT_NAME}'"
+      echo "\$PROJECT_ROOT                              = '${PROJECT_ROOT}'"
+      echo "\$BUILD_DIRECTORY                           = '${BUILD_DIRECTORY}'"
+  
+      echo "\$ARTIFACT_VERSION                          = '${ARTIFACT_VERSION}'"
+      echo "\$ARTIFACT_BUILD_ID                         = '${ARTIFACT_BUILD_ID}'"
+      echo "\$ARTIFACT_BRANCH_NAME                      = '${ARTIFACT_BRANCH_NAME}'"
+      echo "\$ARTIFACT_TIMESTAMP                        = '${ARTIFACT_TIMESTAMP}'"
+      echo "\$ARTIFACT_DATETIME                         = '${ARTIFACT_DATETIME}'"
+      echo "\$ARTIFACT_JS_NAME                          = '${ARTIFACT_JS_NAME}'"
+  
+      echo "\$NODE_VERSION                              = '${NODE_VERSION}'"
+      echo "\$NVM_DIR                                   = '${NVM_DIR}'"
+  
+      echo "\$DEPLOY_TIMESTAMP                          = '${DEPLOY_TIMESTAMP}'"
+      echo "\$DEPLOY_DATETIME                           = '${DEPLOY_DATETIME}'"
+  
+      echo "stage_build__enabled                        = '$(stage_build__enabled)'"
+      echo "stage_staging__enabled                      = '$(stage_staging__enabled)'"
+      echo "stage_production__enabled                   = '$(stage_production__enabled)'"
+  
+      echo "\$YARN_CACHE_FOLDER                         = '${YARN_CACHE_FOLDER}'"
+      echo "stage_build__yarn_caching_is_enabled        = '$(stage_build__yarn_caching_is_enabled)'"
+      echo "stage_build__frontend_check_code_style      = '$(stage_build__frontend_check_code_style)'"
+      echo "stage_build__frontend_analyse_code          = '$(stage_build__frontend_analyse_code)'"
+      echo "stage_build__artifact_build                 = '$(stage_build__artifact_build)'"
+      echo "stage_build__artifact_test                  = '$(stage_build__artifact_test)'"
+      echo "stage_build__artifact_publish_test_results  = '$(stage_build__artifact_publish_test_results)'"
+      echo "stage_build__publish_artifact               = '$(stage_build__publish_artifact)'"
+
+    displayName: 'DEBUG: print configuration variables'
+    condition: eq(variables['debug__print_configuration_variables'], true)
+
+  - bash: |
+      tree -aL 3
+    displayName: 'Debug: list working directory content'
+    condition: eq(variables['debug__list_working_directory_content'], true)
