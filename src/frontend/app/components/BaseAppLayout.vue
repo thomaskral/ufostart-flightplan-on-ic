@@ -3,7 +3,7 @@
     <div>
       <slot name="navigation" />
     </div>
-    <div class="relative flex grow flex-col" :class="[overflowClass]">
+    <div class="relative flex grow flex-col">
       <slot name="content" />
     </div>
     <slot name="dialog" />
@@ -11,23 +11,14 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue'
+import { defineComponent } from 'vue'
 
 export const componentName = 'BaseAppLayout'
 
 export default defineComponent({
   name: componentName,
-  props: {
-    canScroll: {
-      type: Boolean,
-      default: false,
-    },
-  },
   setup(props) {
     return {
-      overflowClass: computed(() =>
-        props.canScroll ? 'overflow-scroll' : 'overflow-hidden',
-      ),
       componentName,
     }
   },

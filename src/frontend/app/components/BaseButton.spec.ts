@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils'
 import { expect, describe, it } from 'vitest'
-import AButton from './AButton.vue'
+import BaseButton from './BaseButton.vue'
 
-describe('AButton', () => {
+describe('BaseButton', () => {
   it('component exists', () => {
-    const wrapper = mount(AButton)
+    const wrapper = mount(BaseButton)
 
     expect(wrapper.exists()).toBeDefined()
   })

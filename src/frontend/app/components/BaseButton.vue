@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import ALink from './ALink.vue'
+import BaseLink from './BaseLink.vue'
 import get from 'lodash/get'
 
 const buttonSizes = {
@@ -45,7 +45,7 @@ interface ComponentDataProps {
 export default defineComponent({
   name: 'AButton',
   components: {
-    ALink,
+    BaseLink,
   },
   props: {
     componentData: {
@@ -75,7 +75,7 @@ export default defineComponent({
   computed: {
     computedTag() {
       if (this.componentData.url || this.componentData.path) {
-        return 'ALink'
+        return 'BaseLink'
       }
       return 'button'
     },
