@@ -4,6 +4,12 @@ module.exports = {
   content: ['./src/**/index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   mode: 'jit',
   theme: {
+    extend: {
+      colors: {
+        porcelain: '#F6F7F8',
+        emperor: '#404040',
+      },
+    },
     fontFamily: {
       sans: [
         'Inter',

@@ -1,9 +1,5 @@
 {
   "canisters": {
-    "data_manager": {
-      "main": "src/backend/data-manager/main.mo",
-      "type": "motoko"
-    },
     "assets": {
       "dependencies": [],
       "frontend": {
@@ -11,18 +7,6 @@
       },
       "source": ["dist"],
       "type": "assets"
-    },
-    "internet_identity": {
-      "__0": "The development build of Internet Identity. For more information, see https://github.com/dfinity/internet-identity#build-features-and-flavors",
-
-      "type": "custom",
-      "candid": "src/internet_identity/internet_identity.did",
-      "wasm": "src/internet_identity/internet_identity.wasm",
-
-      "__1": "There is no standard way to pull remote canisters, so instead we have a dummy build script that",
-      "__2": "simply downloads the Internet Identity canister and Candid description.",
-      "__3": "See also: https://github.com/dfinity/sdk/issues/2085",
-      "build": "src/internet_identity/scripts/download-did-and-wasm"
     }
   },
   "defaults": {
@@ -40,7 +24,7 @@
       "providers": ["https://ic0.app"],
       "type": "persistent"
     },
-    "ic": {
+    "production": {
       "providers": ["https://mainnet.dfinity.network"],
       "type": "persistent"
     }

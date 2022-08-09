@@ -1,4 +1,0 @@
-type Service = 
- service {
- };
-service : () -> Service

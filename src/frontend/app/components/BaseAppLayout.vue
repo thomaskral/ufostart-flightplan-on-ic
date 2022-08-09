@@ -17,7 +17,7 @@ export const componentName = 'BaseAppLayout'
 
 export default defineComponent({
   name: componentName,
-  setup(props) {
+  setup() {
     return {
       componentName,
     }
