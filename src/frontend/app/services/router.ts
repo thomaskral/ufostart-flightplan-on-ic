@@ -6,6 +6,8 @@ import PLanding from '@/domain/landingPage/components/PLanding.vue'
 import PDashboard from '@/domain/dashboard/components/PDashboard.vue'
 
 const isDevelopmentMode = import.meta.env.DEV
+const isAuthenticationMode = import.meta.env.VITE_DFX_AUTHENTICATION_MODE
+
 const routeLogger = (payload) => {
   if (!isDevelopmentMode) {
     return
@@ -46,19 +48,23 @@ export const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  const userStore = useUserStore()
-  const { initializeAuthentication } = userStore
-  await initializeAuthentication()
+  if(isAuthenticationMode === 'true'){
+    console.log(isAuthenticationMode)
+    const userStore = useUserStore()
+    const { initializeAuthentication } = userStore
+    await initializeAuthentication()
 
-  if (!userStore.isLoggedIn && to.name !== 'Home' && to.name !== '') {
-    routeLogger({ msg: 'redirect to home', nav: { from, to } })
-    return { name: 'Home' }
+    if (!userStore.isLoggedIn && to.name !== 'Home' && to.name !== '') {
+      routeLogger({ msg: 'redirect to home', nav: { from, to } })
+      return { name: 'Home' }
+    }
+
+    if (userStore.isLoggedIn && to.name === 'Home') {
+      return { name: 'Dashboard' }
+    }
   }
 
   routeLogger({ from, to })
-  if (userStore.isLoggedIn && to.name === 'Home') {
-    return { name: 'Dashboard' }
-  }
 })
 
 export default router
