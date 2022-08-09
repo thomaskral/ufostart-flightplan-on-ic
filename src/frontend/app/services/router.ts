@@ -48,7 +48,7 @@ export const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  if(isAuthenticationMode === 'true'){
+  if (isAuthenticationMode === 'true') {
     console.log(isAuthenticationMode)
     const userStore = useUserStore()
     const { initializeAuthentication } = userStore

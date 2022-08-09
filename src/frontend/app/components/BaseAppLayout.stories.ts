@@ -33,7 +33,6 @@ export const Default: Story = (args) => ({
     </BaseAppLayout>`,
 })
 
-
 export const DialogOpen: Story = (args) => ({
   components: { BaseAppLayout },
   setup() {
