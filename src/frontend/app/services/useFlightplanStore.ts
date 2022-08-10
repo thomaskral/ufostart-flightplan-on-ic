@@ -4,7 +4,7 @@ import { getFlightPlanByApiKey } from 'ufostart-flightplan-api-client'
 
 type flightplanProps = {
   apiKey: string | null
-  flightplan: Array<object> | null
+  flightplan: Array<object>
   phases: Array<string>
   isFetching: boolean
   showError: boolean
@@ -14,7 +14,7 @@ export const useFlightplanStore = defineStore('flightplanStore', {
   state: () =>
     ({
       apiKey: null,
-      flightplan: null,
+      flightplan: [],
       phases: ['START', 'GROWTH/SCALE', 'PROFESSIONALIZE'],
       isFetching: false,
       showError: false,
@@ -23,6 +23,7 @@ export const useFlightplanStore = defineStore('flightplanStore', {
     async getFlightplan() {
       this.isFetching = true
       this.showError = false
+      this.flightplan = []
 
       try {
         const rawFlightplan =
@@ -30,11 +31,9 @@ export const useFlightplanStore = defineStore('flightplanStore', {
 
         if (rawFlightplan === null) {
           console.log('🚨 No flightplan available')
-          this.flightplan = null
           return
         }
 
-        this.flightplan = []
         this.phases.forEach((phase) => {
           rawFlightplan[phase]?.topics.forEach((topic) => {
             topic.actions.forEach((action) => {

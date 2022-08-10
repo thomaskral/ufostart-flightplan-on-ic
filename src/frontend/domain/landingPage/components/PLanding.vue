@@ -73,7 +73,7 @@
                     </a>
                     to view your flightplan.
                   </span>
-                  <span v-if="showError" class="mt-3 hidden text-sm">
+                  <span v-if="showError" class="mt-3 block text-sm">
                     🙈 Ooops, something went wrong. Please try again later or contact us
                     on
                     <a
@@ -130,8 +130,9 @@ export default defineComponent({
     const { apiKey, flightplan, isFetching, showError } = storeToRefs(flightplanStore)
     const { getFlightplan } = flightplanStore
 
-    const downloadCSVData = (flighplan) => {
-      const csv = unparse(flighplan)
+    const downloadCSVData = (plan) => {
+      console.log(plan)
+      const csv = unparse(plan)
       console.log(csv)
       const anchor = document.createElement('a')
 
@@ -144,7 +145,7 @@ export default defineComponent({
     flightplanStore.$onAction(({ name, after }) => {
       after(() => {
         if (name === 'getFlightplan' && showError.value === false) {
-          downloadCSVData(flightplan)
+          downloadCSVData(flightplan.value)
         }
       })
     })
