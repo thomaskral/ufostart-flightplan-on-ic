@@ -2,7 +2,8 @@ import type { RouteRecordRaw } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import PLanding from '@/domain/landingPage/components/PLanding.vue'
-import PDashboard from '@/domain/dashboard/components/PDashboard.vue'
+import PDashboard from '@/domain/flightplan/components/PDashboard.vue'
+import PDownload from '@/domain/flightplan/components/PDownload.vue'
 
 const isDevelopmentMode = import.meta.env.DEV
 
@@ -35,6 +36,11 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard',
     name: 'Dashboard',
     component: PDashboard,
+  },
+  {
+    path: '/flightplan-download',
+    name: 'Download',
+    component: PDownload,
   },
 ]
 

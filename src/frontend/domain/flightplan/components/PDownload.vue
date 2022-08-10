@@ -23,7 +23,7 @@
                     <span class="whitespace-nowrap">for take off! 🚀</span>
                   </h2>
                   <p class="text-white-200 mx-auto mt-6 max-w-xl text-center text-lg">
-                    Get your custom UFOstart flightplan to have a guide on your side
+                    Download your custom UFOstart flightplan to have a guide on your side
                     through the
                     <span class="whitespace-nowrap">marketing universe 🪐</span>
                   </p>
@@ -49,7 +49,9 @@
                         class="flex w-full items-center justify-center rounded-md border border-transparent bg-orange-400 px-5 py-3 text-base font-medium text-white shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-orange-500 sm:px-10"
                         @click="getFlightplan"
                       >
-                        <span :class="[isFetching ? 'invisible' : 'visible']">Login</span>
+                        <span :class="[isFetching ? 'invisible' : 'visible']">
+                          Download
+                        </span>
                         <span
                           class="absolute block"
                           :class="[isFetching ? 'visible' : 'invisible']"
@@ -115,9 +117,9 @@
 <script>
 import { defineComponent } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
 import BaseAppLayout from '@/app/components/BaseAppLayout.vue'
 import { useFlightplanStore } from '@/app/services/useFlightplanStore'
+import { unparse } from 'papaparse'
 
 export const componentName = 'PLanding'
 export default defineComponent({
@@ -127,14 +129,23 @@ export default defineComponent({
   },
   setup() {
     const flightplanStore = useFlightplanStore()
-    const { apiKey, isFetching, showError } = storeToRefs(flightplanStore)
+    const { apiKey, flightplan, isFetching, showError } = storeToRefs(flightplanStore)
     const { getFlightplan } = flightplanStore
-    const router = useRouter()
+
+    const downloadCSVData = (plan) => {
+      const csv = unparse(plan)
+      const anchor = document.createElement('a')
+
+      anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv)
+      anchor.target = '_blank'
+      anchor.download = 'flightplan.csv'
+      anchor.click()
+    }
 
     flightplanStore.$onAction(({ name, after }) => {
       after(() => {
         if (name === 'getFlightplan' && showError.value === false) {
-          router.push({ name: 'Dashboard' })
+          downloadCSVData(flightplan.value)
         }
       })
     })
