@@ -30,7 +30,7 @@ export const useFlightplanStore = defineStore('flightplanStore', {
           (await getFlightPlanByApiKey(this.apiKey))?.records?.phase ?? null
 
         if (rawFlightplan === null) {
-          console.log('🚨 No flightplan available')
+          log('🚨 No flightplan available')
           return
         }
 

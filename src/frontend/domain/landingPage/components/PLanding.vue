@@ -36,18 +36,18 @@
                         id="api-key"
                         required
                         type="text"
-                        @change="apiKey = $event.target.value"
                         :value="apiKey"
                         name="api-key"
                         placeholder="Enter your key"
                         class="block w-full rounded-md border border-transparent px-5 py-3 text-base text-gray-900 placeholder-gray-400 shadow-sm placeholder:text-center focus:border-transparent focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-orange-500 sm:placeholder:text-left"
+                        @change="apiKey = $event.target.value"
                       />
                     </div>
                     <div class="mt-4 sm:mt-0 sm:ml-3">
                       <button
                         type="button"
-                        @click="getFlightplan"
                         class="flex w-full items-center justify-center rounded-md border border-transparent bg-orange-400 px-5 py-3 text-base font-medium text-white shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-orange-500 sm:px-10"
+                        @click="getFlightplan"
                       >
                         <span :class="[isFetching ? 'invisible' : 'visible']">Login</span>
                         <span
@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import { computed, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 import BaseAppLayout from '@/app/components/BaseAppLayout.vue'
 import { useFlightplanStore } from '@/app/services/useFlightplanStore'
@@ -131,9 +131,7 @@ export default defineComponent({
     const { getFlightplan } = flightplanStore
 
     const downloadCSVData = (plan) => {
-      console.log(plan)
       const csv = unparse(plan)
-      console.log(csv)
       const anchor = document.createElement('a')
 
       anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv)
