@@ -1,5 +1,5 @@
 <template>
-  <BaseAppLayout class="bg-porcelain dark:bg-emperor" :class="componentName">
+  <BaseAppLayout class="bg-porcelain text-white dark:bg-emperor" :class="componentName">
     <template #navigation></template>
     <template #content>
       <div class="py-16 sm:py-24">
@@ -28,7 +28,7 @@
                     <span class="whitespace-nowrap">marketing universe 🪐</span>
                   </p>
                 </div>
-                <form id="flightplan-form" class="mt-12 sm:mx-auto sm:max-w-xl">
+                <form class="mt-12 sm:mx-auto sm:max-w-xl">
                   <div class="w-full sm:flex">
                     <div class="min-w-0 flex-1">
                       <label for="api-key" class="sr-only">API key</label>
@@ -36,21 +36,23 @@
                         id="api-key"
                         required
                         type="text"
+                        :value="apiKey"
                         name="api-key"
                         placeholder="Enter your key"
                         class="block w-full rounded-md border border-transparent px-5 py-3 text-base text-gray-900 placeholder-gray-400 shadow-sm placeholder:text-center focus:border-transparent focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-orange-500 sm:placeholder:text-left"
+                        @change="apiKey = $event.target.value"
                       />
                     </div>
                     <div class="mt-4 sm:mt-0 sm:ml-3">
                       <button
-                        id="submit-button"
-                        type="submit"
+                        type="button"
                         class="flex w-full items-center justify-center rounded-md border border-transparent bg-orange-400 px-5 py-3 text-base font-medium text-white shadow hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-orange-500 sm:px-10"
+                        @click="getFlightplan"
                       >
-                        <span id="submit-button-text">Login</span>
+                        <span :class="[isFetching ? 'invisible' : 'visible']">Login</span>
                         <span
-                          id="submit-button-indicator"
-                          class="invisible absolute block"
+                          class="absolute block"
+                          :class="[isFetching ? 'visible' : 'invisible']"
                         >
                           <span
                             style="border-top-color: transparent"
@@ -60,7 +62,7 @@
                       </button>
                     </div>
                   </div>
-                  <span id="hint-message" class="mt-3 block text-sm">
+                  <span v-if="!showError" class="mt-3 block text-sm">
                     Enter the key you have received by email after
                     <a
                       href="https://form.jotform.com/221392336964057"
@@ -71,7 +73,7 @@
                     </a>
                     to view your flightplan.
                   </span>
-                  <span id="failure-message" class="mt-3 hidden text-sm">
+                  <span v-if="showError" class="mt-3 block text-sm">
                     🙈 Ooops, something went wrong. Please try again later or contact us
                     on
                     <a
@@ -112,7 +114,10 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { storeToRefs } from 'pinia'
 import BaseAppLayout from '@/app/components/BaseAppLayout.vue'
+import { useFlightplanStore } from '@/app/services/useFlightplanStore'
+import { unparse } from 'papaparse'
 
 export const componentName = 'PLanding'
 export default defineComponent({
@@ -121,8 +126,34 @@ export default defineComponent({
     BaseAppLayout,
   },
   setup() {
+    const flightplanStore = useFlightplanStore()
+    const { apiKey, flightplan, isFetching, showError } = storeToRefs(flightplanStore)
+    const { getFlightplan } = flightplanStore
+
+    const downloadCSVData = (plan) => {
+      const csv = unparse(plan)
+      const anchor = document.createElement('a')
+
+      anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv)
+      anchor.target = '_blank'
+      anchor.download = 'flightplan.csv'
+      anchor.click()
+    }
+
+    flightplanStore.$onAction(({ name, after }) => {
+      after(() => {
+        if (name === 'getFlightplan' && showError.value === false) {
+          downloadCSVData(flightplan.value)
+        }
+      })
+    })
+
     return {
       componentName,
+      apiKey,
+      isFetching,
+      showError,
+      getFlightplan,
     }
   },
 })
