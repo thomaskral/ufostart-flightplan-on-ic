@@ -97,6 +97,8 @@
     "@dfinity/candid": "^0.11.3",
     "@dfinity/identity": "^0.11.3",
     "@dfinity/principal": "^0.11.3",
+    "@headlessui/vue": "^1.6.7",
+    "@heroicons/vue": "^1.0.6",
     "@vueuse/core": "^8.6.0",
     "concurrently": "^7.2.2",
     "json-to-csv-export": "^1.1.1",
