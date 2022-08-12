@@ -2,31 +2,32 @@
   <BaseAppLayout class="bg-base-300" :class="componentName">
     <template #navigation></template>
     <template #content>
-      <div class="p-10">
-        <div class="lg:flex lg:items-center lg:justify-between">
+      <div class="flex h-screen flex-col p-10">
+        <div class="flex justify-between">
           <div class="min-w-0 flex-1">
-            <span>Hello Firstname Secondname</span>
+            <span>Hello Vitalik Buterin</span>
             <h2
               class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl"
             >
-              Company Name Flightplan
+              Ethereum Flightplan
             </h2>
             <div class="mt-1 flex flex-row flex-wrap space-x-6 sm:mt-0">
               <div class="mt-2 flex items-center text-sm text-gray-500">
                 <StarIcon
-                  class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                  class="mr-1.5 h-5 w-5 flex-shrink-0 text-yellow-400"
                   aria-hidden="true"
                 />
-                Goal
-              </div>
-              <div class="mt-2 flex items-center text-sm text-gray-500">
-                <LocationMarkerIcon
-                  class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                  aria-hidden="true"
-                />
-                Phase
+                Community engagement (Goal)
               </div>
             </div>
+          </div>
+          <div>
+            <img
+              class="mx-auto mb-8 h-[24px] w-[24px] rounded-md shadow-xl md:h-[48px] md:w-[48px]"
+              src="https://uploads-ssl.webflow.com/600efa38a5bbff0b655b71f1/60111a18416e071e3d660fed_UFOstart-logo.svg"
+              width="100px"
+              height="100px"
+            />
           </div>
           <div v-if="false" class="mt-5 flex lg:mt-0 lg:ml-4">
             <span class="block">
@@ -40,7 +41,7 @@
             </span>
           </div>
         </div>
-        <div class="mt-12 rounded-md bg-porcelain p-6">
+        <div class="mt-12 flex grow flex-col overflow-hidden rounded-md bg-porcelain p-6">
           <nav aria-label="Progress">
             <ol
               role="list"
@@ -74,11 +75,11 @@
                   aria-current="step"
                 >
                   <span
-                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-indigo-600"
+                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-orange-500"
                   >
-                    <span class="text-indigo-600">{{ step.id }}</span>
+                    <span class="text-orange-500">{{ step.id }}</span>
                   </span>
-                  <span class="ml-4 text-sm font-medium text-indigo-600">
+                  <span class="ml-4 text-sm font-medium text-orange-500">
                     {{ step.name }}
                   </span>
                 </a>
@@ -122,82 +123,94 @@
               </li>
             </ol>
           </nav>
-          <div class="mt-6">
-            <div class="overflow-hidden bg-white shadow sm:rounded-md">
-              <ul role="list" class="divide-y divide-gray-200">
+          <div class="mt-6 overflow-hidden">
+            <div class="h-full overflow-hidden bg-white shadow sm:rounded-md">
+              <ul role="list" class="h-full divide-y divide-gray-200 overflow-y-scroll">
                 <li v-for="position in positions" :key="position.id">
-                  <a href="#" class="block hover:bg-gray-50">
+                  <div class="block">
                     <div class="px-4 py-4 sm:px-6">
                       <div class="flex items-center justify-between">
-                        <p class="truncate text-sm font-medium text-indigo-600">
-                          {{ position.title }}
-                        </p>
+                        <div class="mt-1">
+                          <p class="font-medium text-gray-700">
+                            Make your discord channels public
+                          </p>
+                        </div>
                         <div class="ml-2 flex flex-shrink-0">
                           <p
-                            class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800"
+                            class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
+                            :class="computedStatusCss(position.type)"
                           >
                             {{ position.type }}
                           </p>
                         </div>
                       </div>
-                      <div class="mt-2">
-                        <p>Longer Description</p>
-                        <div class="relative mt-1 flex items-start">
-                          <div class="flex h-5 items-center">
-                            <input
-                              id="comments"
-                              aria-describedby="comments-description"
-                              name="comments"
-                              type="checkbox"
-                              class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                          </div>
-                          <div class="ml-3 text-sm">
-                            <label for="comments" class="font-medium text-gray-700">
-                              New comments&nbsp;
-                            </label>
-                            <span id="comments-description" class="text-gray-500">
-                              <span class="sr-only">New comments</span>
-                              so you always know what's happening.
-                            </span>
-                          </div>
-                        </div>
+                      <div class="mt-3 text-sm">
+                        <p>Marketing action description</p>
                       </div>
-                      <div class="mt-2 sm:flex sm:justify-between">
+                      <div class="mt-3 sm:flex sm:justify-between">
                         <div class="sm:flex">
-                          <p class="flex items-center text-sm text-gray-500">
-                            <UsersIcon
-                              class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                          <p class="flex items-end text-sm text-gray-500">
+                            <span
+                              class="mr-1.5 h-5 w-5 flex-shrink-0 rounded-full bg-gray-400 text-center text-white"
                               aria-hidden="true"
-                            />
+                            >
+                              5
+                            </span>
                             {{ position.department }}
                           </p>
                           <p
-                            class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6"
+                            class="mt-2 flex items-end text-sm text-gray-500 sm:mt-0 sm:ml-6"
                           >
-                            <LocationMarkerIcon
-                              class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                            <span
+                              class="mr-1.5 h-5 w-5 flex-shrink-0 rounded-full bg-gray-400 text-center text-white"
                               aria-hidden="true"
-                            />
+                            >
+                              3
+                            </span>
                             {{ position.location }}
                           </p>
                         </div>
-                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                          <CalendarIcon
-                            class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                            aria-hidden="true"
-                          />
-                          <p>
-                            Completed on
-                            {{ ' ' }}
-                            <time :datetime="position.closeDate">
-                              {{ position.closeDateFull }}
-                            </time>
-                          </p>
+                        <div class="block">
+                          <div
+                            class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0"
+                            :class="
+                              position.startedDateFull === '' ? 'invisible' : 'visible'
+                            "
+                          >
+                            <CalendarIcon
+                              class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                              aria-hidden="true"
+                            />
+                            <p>
+                              Started
+                              {{ ' ' }}
+                              <time :datetime="position.closeDate">
+                                {{ position.startedDateFull }}
+                              </time>
+                            </p>
+                          </div>
+                          <div
+                            class="mt-1 flex items-center text-sm text-gray-500"
+                            :class="
+                              position.closeDateFull === '' ? 'invisible' : 'visible'
+                            "
+                          >
+                            <CalendarIcon
+                              class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                              aria-hidden="true"
+                            />
+                            <p>
+                              Completed
+                              {{ ' ' }}
+                              <time :datetime="position.closeDate">
+                                {{ position.closeDateFull }}
+                              </time>
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </a>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -211,14 +224,7 @@
 
 <script lang="ts" setup>
 import BaseAppLayout from '@/app/components/BaseAppLayout.vue'
-import {
-  StarIcon,
-  CheckIcon,
-  LocationMarkerIcon,
-  PencilIcon,
-  CalendarIcon,
-  UsersIcon,
-} from '@heroicons/vue/solid'
+import { StarIcon, CheckIcon, PencilIcon, CalendarIcon } from '@heroicons/vue/solid'
 
 const componentName = 'PDashboard'
 
@@ -235,26 +241,90 @@ const positions = [
     type: 'Done',
     location: 'Priority',
     department: 'Effort',
+    startedDate: '2020-01-07',
+    startedDateFull: 'January 7, 2020',
     closeDate: '2020-01-07',
     closeDateFull: 'January 7, 2020',
   },
   {
     id: 2,
     title: 'Some Marketing Action',
-    type: 'To Do',
+    type: 'In progress',
     location: 'Priority',
     department: 'Effort',
+    startedDate: '2020-01-07',
+    startedDateFull: 'January 7, 2020',
     closeDate: '',
     closeDateFull: '',
   },
   {
     id: 3,
     title: 'Some Marketing Action',
-    type: 'To Do',
+    type: 'To do',
     location: 'Priority',
     department: 'Effort',
+    startedDate: '2020-01-07',
+    startedDateFull: '',
+    closeDate: '',
+    closeDateFull: '',
+  },
+  {
+    id: 4,
+    title: 'Some Marketing Action',
+    type: 'To do',
+    location: 'Priority',
+    department: 'Effort',
+    startedDate: '2020-01-07',
+    startedDateFull: '',
+    closeDate: '',
+    closeDateFull: '',
+  },
+  {
+    id: 5,
+    title: 'Some Marketing Action',
+    type: 'To do',
+    location: 'Priority',
+    department: 'Effort',
+    startedDate: '2020-01-07',
+    startedDateFull: '',
+    closeDate: '',
+    closeDateFull: '',
+  },
+  {
+    id: 6,
+    title: 'Some Marketing Action',
+    type: 'To do',
+    location: 'Priority',
+    department: 'Effort',
+    startedDate: '2020-01-07',
+    startedDateFull: '',
+    closeDate: '',
+    closeDateFull: '',
+  },
+  {
+    id: 7,
+    title: 'Some Marketing Action',
+    type: 'To do',
+    location: 'Priority',
+    department: 'Effort',
+    startedDate: '2020-01-07',
+    startedDateFull: '',
     closeDate: '',
     closeDateFull: '',
   },
 ]
+
+const computedStatusCss = (status) => {
+  if (status === 'Done') {
+    return 'bg-green-100 text-green-800'
+  }
+
+  if (status === 'In progress') {
+    return 'bg-yellow-100 text-yellow-800'
+  }
+
+  if (status === 'To do') {
+    return 'bg-red-100 text-red-800'
+  }
+}
 </script>
